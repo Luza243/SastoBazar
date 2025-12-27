@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasto Bazar - Smart Shopping, Smart Savings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- GLASSMORPHISM NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" data-page="home">
+                <i class="fas fa-shopping-bag logo-icon"></i>
+                Sasto Bazar
+            </a>
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#" class="nav-link" data-page="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-page="categories">Categories</a></li>
+                <li><a href="#" class="nav-link" data-page="products">Products</a></li>
+                <li><a href="#" class="nav-link" data-page="cart">Cart</a></li>
+                <li><a href="#" class="nav-link" data-page="login" id="login-nav-link">Login</a></li>
+            </ul>
+            <div class="nav-controls">
+                <!-- User Profile (hidden by default) -->
+                <div class="user-profile" id="user-profile">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div class="user-name" id="user-name">User</div>
+                    <div class="user-dropdown">
+                        <a href="#" id="logout-btn">Logout</a>
+                    </div>
+                </div>
+                <div class="cart-icon" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </div>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CART MODAL -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-modal" id="cart-modal">
+        <h2 style="margin-bottom: 2rem;">Shopping Cart</h2>
+        <div id="cart-items-container"></div>
+        <div id="cart-summary" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #eee;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">₹0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span>Shipping:</span>
+                <span>₹50</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                <span>Total:</span>
+                <span id="cart-total">₹0</span>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 2rem;" id="checkout-btn">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- ESEWA PAYMENT MODAL -->
+    <div class="esewa-modal" id="esewa-modal">
+        <div class="esewa-content">
+            <div class="esewa-logo">e</div>
+            <h2>eSewa Payment</h2>
+            <p style="margin: 1rem 0 2rem; color: var(--gray);">
+                You will be redirected to eSewa for secure payment
+            </p>
+            <div style="text-align: left; margin-bottom: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 10px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Amount:</span>
+                    <span id="esewa-amount">₹0</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>Service Charge:</span>
+                    <span>₹10</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                    <span>Total to Pay:</span>
+                    <span id="esewa-total">₹0</span>
+                </div>
+            </div>
+            <button class="esewa-btn" id="confirm-esewa-payment">
+                <i class="fas fa-lock"></i> Confirm Payment
+            </button>
+            <button class="btn" style="width: 100%; margin-top: 1rem; background: transparent; border: 2px solid var(--primary); color: var(--primary);" id="cancel-esewa">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- ORDER SUCCESS MODAL -->
+    <div class="order-success-modal" id="order-success-modal">
+        <div class="order-success-content">
+            <i class="fas fa-check-circle order-success-icon"></i>
+            <h2>Order Successful!</h2>
+            <p style="margin: 1rem 0 2rem; color: var(--gray);">
+                Thank you for your purchase. Your order has been placed successfully.
+            </p>
+            <p style="margin-bottom: 2rem; font-size: 1.2rem; font-weight: bold;">
+                Order ID: <span id="order-id">SB-</span>
+            </p>
+            <button class="btn btn-primary" id="continue-shopping-btn">
+                <i class="fas fa-shopping-bag"></i> Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <section id="home-page" class="page">
+        <div class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Sasto Bazar</h1>
+                <p class="hero-subtitle">Smart Shopping, Smart Savings</p>
+                <p style="color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto 2rem; line-height: 1.6;">
+                    Discover amazing products at unbeatable prices. Quality meets affordability in every purchase.
+                </p>
+                <button class="btn btn-primary" id="shop-now-btn">
+                    <i class="fas fa-bolt"></i> Start Shopping
+                </button>
+            </div>
+        </div>
+        <section class="section">
+            <h2 class="section-title">Shop by Categories</h2>
+            <div class="categories-grid">
+                <div class="category-card" data-category="groceries">
+                    <div class="category-icon">
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <h3>Groceries</h3>
+                    <p>Fresh produce, pantry staples & more</p>
+                </div>
+                <div class="category-card" data-category="clothes">
+                    <div class="category-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3>Clothes</h3>
+                    <p>Fashion for men, women & kids</p>
+                </div>
+                <div class="category-card" data-category="electronics">
+                    <div class="category-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h3>Electronics</h3>
+                    <p>Gadgets, appliances & accessories</p>
+                </div>
+                <div class="category-card" data-category="stationery">
+                    <div class="category-icon">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                    <h3>Stationery</h3>
+                    <p>Office & school supplies</p>
+                </div>
+                <div class="category-card" data-category="home-appliances">
+                    <div class="category-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Home Appliances</h3>
+                    <p>Kitchen & home essentials</p>
+                </div>
+                <div class="category-card" data-category="sports">
+                    <div class="category-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Sports</h3>
+                    <p>Fitness equipment & gear</p>
+                </div>
+            </div>
+        </section>
+        <section class="section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+            <div class="container">
+                <h2 class="section-title">Why Choose Us?</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-tag" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Best Prices</h3>
+                        <p>Guaranteed lowest prices with price match policy</p>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-shipping-fast" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Fast Delivery</h3>
+                        <p>Free shipping on orders above ₹499</p>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Quality Assurance</h3>
+                        <p>All products verified for quality</p>
+                    </div>
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>Secure Payment</h3>
+                        <p>100% secure payment with eSewa</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- CATEGORIES PAGE -->
+    <section id="categories-page" class="page">
+        <div class="section">
+            <h2 class="section-title">All Categories</h2>
+            <div class="categories-grid">
+                <!-- Categories will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS PAGE -->
+    <section id="products-page" class="page">
+        <div class="section">
+            <h2 class="section-title">Our Products</h2>
+            <div class="search-container">
+                <input type="text" class="search-input" id="search-input" placeholder="Search products...">
+                <button class="search-btn" id="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="results-per-page">
+                <span>Show:</span>
+                <select id="results-per-page-select">
+                    <option value="8">8 per page</option>
+                    <option value="12">12 per page</option>
+                    <option value="16">16 per page</option>
+                    <option value="24">24 per page</option>
+                    <option value="32">32 per page</option>
+                </select>
+                <span style="margin-left: auto; color: var(--gray);" id="results-count"></span>
+            </div>
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="groceries">Groceries</button>
+                <button class="filter-btn" data-filter="clothes">Clothes</button>
+                <button class="filter-btn" data-filter="electronics">Electronics</button>
+                <button class="filter-btn" data-filter="stationery">Stationery</button>
+                <button class="filter-btn" data-filter="home-appliances">Home Appliances</button>
+                <button class="filter-btn" data-filter="sports">Sports</button>
+            </div>
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be loaded dynamically -->
+            </div>
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CART PAGE -->
+    <section id="cart-page" class="page">
+        <div class="section">
+            <h2 class="section-title">Your Shopping Cart</h2>
+            <div id="cart-page-items">
+                <!-- Cart items will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- LOGIN PAGE -->
+    <section id="login-page" class="page active">
+        <div class="auth-container">
+            <div class="auth-card" id="login-card">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Welcome Back</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="login-email" placeholder=" " required>
+                        <label class="form-label" for="login-email">Email Address</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="login-password" placeholder=" " required minlength="6">
+                        <label class="form-label" for="login-password">Password</label>
+                        <button type="button" class="password-toggle" id="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div style="margin-bottom: 2rem; text-align: right;">
+                        <a href="#" style="color: var(--primary); text-decoration: none;">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn-auth">Login</button>
+                    <div class="auth-switch">
+                        Don't have an account? <a href="#" id="show-signup">Sign up</a>
+                    </div>
+                </form>
+                <div id="login-success" class="auth-success" style="display: none;">
+                    <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;"></i>
+                    <h3>Login Successful!</h3>
+                    <p>Welcome to Sasto Bazar</p>
+                </div>
+            </div>
+
+            <!-- SIGNUP CARD -->
+            <div class="auth-card" id="signup-card" style="display: none;">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary);">Create Account</h2>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="signup-name" placeholder=" " required>
+                        <label class="form-label" for="signup-name">Full Name</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="signup-email" placeholder=" " required>
+                        <label class="form-label" for="signup-email">Email Address</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="signup-password" placeholder=" " required minlength="6">
+                        <label class="form-label" for="signup-password">Password (min 6 characters)</label>
+                        <button type="button" class="password-toggle" id="signup-password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="signup-confirm-password" placeholder=" " required minlength="6">
+                        <label class="form-label" for="signup-confirm-password">Confirm Password</label>
+                    </div>
+                    <button type="submit" class="btn-auth">Sign Up</button>
+                    <div class="auth-switch">
+                        Already have an account? <a href="#" id="show-login">Login</a>
+                    </div>
+                </form>
+                <div id="signup-success" class="auth-success" style="display: none;">
+                    <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;"></i>
+                    <h3>Account Created!</h3>
+                    <p>You can now login to your account</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHECKOUT PAGE -->
+    <section id="checkout-page" class="page">
+        <div class="checkout-container">
+            <h2 class="section-title">Checkout</h2>
+            <div class="checkout-grid">
+                <div>
+                    <h3 style="margin-bottom: 1.5rem;">Shipping Information</h3>
+                    <form id="checkout-form">
+                        <div style="margin-bottom: 1.5rem;">
+                            <input type="text" class="form-input" id="full-name" placeholder="Full Name" required>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <input type="email" class="form-input" id="checkout-email" placeholder="Email Address" required>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <input type="tel" class="form-input" id="phone-number" placeholder="Phone Number" required>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <textarea class="form-input" id="shipping-address" placeholder="Shipping Address" rows="4" required></textarea>
+                        </div>
+                        <h3 style="margin: 2rem 0 1.5rem;">Payment Method</h3>
+                        <div class="payment-methods">
+                            <div class="payment-method" data-method="cod">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">Cash on Delivery</div>
+                                    <div style="font-size: 0.9rem; color: var(--gray);">Pay when you receive the order</div>
+                                </div>
+                            </div>
+                            <div class="payment-method selected" data-method="esewa">
+                                <div class="esewa-logo">e</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">eSewa</div>
+                                    <div style="font-size: 0.9rem; color: var(--gray);">Secure online payment</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                            Place Order
+                        </button>
+                    </form>
+                </div>
+                <div class="checkout-summary">
+                    <h3 style="margin-bottom: 1.5rem;">Order Summary</h3>
+                    <div id="checkout-summary-items">
+                        <!-- Order items will be loaded here -->
+                    </div>
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                        <div class="summary-item">
+                            <span>Subtotal</span>
+                            <span id="checkout-subtotal">₹0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Shipping</span>
+                            <span>₹50</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Tax (5%)</span>
+                            <span id="checkout-tax">₹0</span>
+                        </div>
+                        <div class="summary-item checkout-total">
+                            <span>Total</span>
+                            <span id="checkout-total">₹0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.8rem;">Sasto Bazar</h3>
+                <p>Affordable shopping for everyone. Quality products at the best prices.</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 1rem;">Quick Links</h4>
+                <ul style="list-style: none;">
+                    <li><a href="#" data-page="home" style="color: white; text-decoration: none; line-height: 2;">Home</a></li>
+                    <li><a href="#" data-page="products" style="color: white; text-decoration: none; line-height: 2;">Products</a></li>
+                    <li><a href="#" data-page="categories" style="color: white; text-decoration: none; line-height: 2;">Categories</a></li>
+                    <li><a href="#" data-page="cart" style="color: white; text-decoration: none; line-height: 2;">Cart</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 1rem;">Contact Us</h4>
+                <p><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i> 123 Market Street, City</p>
+                <p><i class="fas fa-phone" style="margin-right: 10px;"></i> +91 98765 43210</p>
+                <p><i class="fas fa-envelope" style="margin-right: 10px;"></i> info@sastobazar.com</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 1rem;">Payment Partners</h4>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 5px; font-weight: bold; color: #53C351;">eSewa</div>
+                    <div style="background: white; padding: 0.5rem 1rem; border-radius: 5px; font-weight: bold; color: #333;">Khalti</div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p>&copy; 2024 Sasto Bazar. All rights reserved. | Computer Science Project</p>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Product added to cart!</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
